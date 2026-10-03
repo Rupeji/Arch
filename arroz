@@ -1,23 +1,65 @@
 #!/bin/bash
 
-# Salir inmediatamente si ocurre algún error durante la instalación
+# Salir inmediatamente si ocurre algún error
 set -e
 
-echo "=== [1/4] Actualizando sistema e instalando dependencias de software ==="
+echo "=== [1/6] Verificando e instalando el asistente AUR (yay) ==="
+if ! command -v yay &> /dev/null; then
+    echo "¡yay no está instalado! Clonando y compilando desde el repositorio oficial..."
+    # Instalar dependencias necesarias para compilar en Arch
+    sudo pacman -S --needed --noconfirm base-devel git
+    
+    # Crear directorio temporal para la compilación
+    rm -rf /tmp/yay-bin
+    git clone https://archlinux.org /tmp/yay-bin
+    
+    # Compilar e instalar de forma segura como usuario normal
+    cd /tmp/yay-bin
+    makepkg -si --noconfirm
+    cd - # Volver al directorio original del script
+else
+    echo "✔ yay ya se encuentra instalado en el sistema."
+fi
+
+echo "=== [2/6] Instalando Emulador de Terminal (Kitty) y Shell (Fish) ==="
+sudo pacman -S --needed --noconfirm kitty fish
+
+echo "=== [3/6] Aplicando tus configuraciones respaldadas ==="
+# Asegurar que el directorio de configuraciones existe
+mkdir -p ~/.config
+
+# Copiar configuración de Kitty si la carpeta existe en el repositorio
+if [ -d "./kitty" ]; then
+    echo "Copiando configuración local de Kitty a ~/.config/kitty..."
+    rm -rf ~/.config/kitty
+    cp -r ./kitty ~/.config/
+else
+    echo "⚠ Alerta: No se encontró la carpeta './kitty' al lado del script."
+fi
+
+# Copiar configuración de Fish si la carpeta existe en el repositorio
+if [ -d "./fish" ]; then
+    echo "Copiando configuración local de Fish a ~/.config/fish..."
+    rm -rf ~/.config/fish
+    cp -r ./fish ~/.config/
+else
+    echo "⚠ Alerta: No se encontró la carpeta './fish' al lado del script."
+fi
+
+echo "=== [4/6] Instalando dependencias de personalización avanzada ==="
 # Software base del vídeo (Blur, Material You y efectos de fondo)
 yay -S --noconfirm kvantum \
                     kwin-effects-better-blur-dx-git \
                     kde-material-you-colors-git \
                     plasma6-applets-wallpaper-effects
 
-echo "=== [2/4] Descargando e instalando los TEMAS DEL VÍDEO (Fluent y Klassy) ==="
-# Instalamos la suite Klassy (Bordes redondos y botones estilo Windows 11 o Mac)
-# E instalamos el pack completo de temas e iconos Fluent recomendados en el vídeo
+echo "=== [5/6] Descargando los TEMAS DEL VÍDEO (Fluent y Klassy) ==="
+# Suite Klassy (Bordes redondos) y el ecosistema visual Fluent
 yay -S --noconfirm klassy-bin \
                     plasma6-themes-fluent-git \
                     fluent-icon-theme-git
 
-echo "=== [3/4] Automatizando las Reglas de Ventana (Opacidad al 85%) ==="
+echo "=== [6/6] Automatizando las Reglas de Ventana (Opacidad al 85%) ==="
 mkdir -p ~/.config/kwinrulesrc.d/
 cat << 'EOF' > ~/.config/kwinrulesrc
 Description=Efecto Transparencia del Video
@@ -31,16 +73,16 @@ wmclasscomplete=false
 wmclassmatch=0
 EOF
 
-echo "=== [4/4] Activando el servicio de colores dinámicos ==="
+# Forzar al sistema a arrancar en modo oscuro para que los temas coordinen bien
+kwriteconfig6 --file kdeglobals --group General --key ColorScheme BreezeDark || true
+
+# Activar el demonio en segundo plano de los colores dinámicos
 systemctl --user enable --now kde-material-you-colors.service || true
 
 echo "=========================================================================="
-echo "           ¡INSTALACIÓN DE SOFTWARE Y TEMAS COMPLETA!"
+echo "    ¡INSTALACIÓN, COPILACIÓN Y CONFIGURACIONES COMPLETADAS CON ÉXITO!"
 echo "=========================================================================="
-echo "Para aplicar los componentes internos, REINICIA LA SESIÓN ahora mismo."
-echo ""
-echo "Al volver, activa los temas en tu panel de control con estos 3 pasos:"
-echo "1. Estilo de Ventanas: Ve a 'Decoraciones de ventana' y elige KLASSY."
-echo "2. Iconos y Colores: Ve a 'Temas Globales' o 'Iconos' y aplica FLUENT."
-echo "3. Renderizado: Ve a 'Estilo de aplicaciones', cambia a KVANTUM y listo."
+echo "1. Tu terminal Kitty y tu shell Fish ya tienen aplicados tus archivos."
+echo "2. REINICIA LA SESIÓN para inicializar el motor gráfico Better Blur DX."
+echo "3. Al volver, activa Klassy, Fluent y Kvantum en las Preferencias."
 echo "=========================================================================="
