@@ -21,8 +21,21 @@ else
     echo "✔ yay ya se encuentra instalado en el sistema."
 fi
 
-echo "=== [2/6] Instalando Emulador de Terminal (Kitty) y Shell (Fish) ==="
+echo "=== [2/6] Instalando Kitty, Fish y cambiando Shell por defecto ==="
 sudo pacman -S --needed --noconfirm kitty fish
+
+# Obtener la ruta exacta de donde se instaló fish
+FISH_PATH=$(which fish)
+
+# Asegurar que fish está en la lista de shells permitidos del sistema (/etc/shells)
+if ! grep -q "^$FISH_PATH$" /etc/shells; then
+    echo "Añadiendo Fish a la lista de shells seguros del sistema..."
+    echo "$FISH_PATH" | sudo tee -a /etc/shells
+fi
+
+# Cambiar de forma permanente el shell de tu usuario actual a Fish
+echo "Cambiando tu shell predeterminado a Fish..."
+sudo chsh -s "$FISH_PATH" "$USER"
 
 echo "=== [3/6] Aplicando tus configuraciones respaldadas ==="
 # Asegurar que el directorio de configuraciones existe
@@ -80,9 +93,10 @@ kwriteconfig6 --file kdeglobals --group General --key ColorScheme BreezeDark || 
 systemctl --user enable --now kde-material-you-colors.service || true
 
 echo "=========================================================================="
-echo "    ¡INSTALACIÓN, COPILACIÓN Y CONFIGURACIONES COMPLETADAS CON ÉXITO!"
+echo "    ¡INSTALACIÓN, CONFIGURACIÓN Y CAMBIO DE SHELL COMPLETADOS!"
 echo "=========================================================================="
-echo "1. Tu terminal Kitty y tu shell Fish ya tienen aplicados tus archivos."
-echo "2. REINICIA LA SESIÓN para inicializar el motor gráfico Better Blur DX."
-echo "3. Al volver, activa Klassy, Fluent y Kvantum en las Preferencias."
+echo "1. Tu terminal Kitty y tu shell Fish ya tienen tus archivos aplicados."
+echo "2. ¡Fish ya es tu shell por defecto! Se activará al abrir tu terminal."
+echo "3. REINICIA EL EQUIPO para aplicar el cambio de shell y el motor de Blur."
+echo "4. Al volver, activa Klassy, Fluent y Kvantum en las Preferencias."
 echo "=========================================================================="
