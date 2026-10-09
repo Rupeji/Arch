@@ -3,7 +3,7 @@ name: bazzite-kineticwe
 description: Imagen personalizada de Bazzite con el entorno de mosaico KineticWE, Kitty y la shell Fish.
 
 # Descarga de la imagen base oficial de Bazzite (KDE)
-base-image: ghcr.io/ublue-os/bazzite
+base-image: ghcr.io/ublue-os/bazzite-nvidia
 image-version: stable
 
 modules:
