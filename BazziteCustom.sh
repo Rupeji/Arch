@@ -7,16 +7,15 @@ base-image: ghcr.io/ublue-os/bazzite-nvidia
 image-version: stable
 
 modules:
-  # 1. Habilitar los repositorios COPR necesarios
+  # 1. Habilitar los repositorios COPR necesarios con la sintaxis real de BlueBuild
   - type: copr
-    enable:
+    repos:
       - theblackdon/kineticwe   # Repo principal de KineticWE
       - lionheartp/Hyprland     # Provee los paquetes base de Noctalia Shell
 
-  # 2. Reemplazo atómico e instalación
+  # 2. Reemplazo atómico e instalación usando rpm-ostree corregido
   - type: rpm-ostree
-    # Eliminamos primero los paquetes stock conflictivos para que KineticWE los pueda sustituir
-    override-remove:
+    override_remove:
       - kwin
       - kwin-common
       - kwin-libs
