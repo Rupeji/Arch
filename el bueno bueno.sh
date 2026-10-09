@@ -43,8 +43,6 @@ modules:
       - kitty           # Terminal acelerada por GPU
       - fish            # Shell interactiva predeterminada
       - dolphin         # Administrador de archivos nativo
-      - obs-studio      # Software de grabación/transmisión
-      - discord         # Cliente de comunicación nativo de Fedora
 
   # 5. CONFIGURACIÓN DEL SISTEMA
   - type: script
