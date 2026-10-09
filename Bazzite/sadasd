@@ -29,3 +29,6 @@ CONTESTA EN ESPAÑOL. Actúa como un experto en ingeniería de sistemas operativ
 - No uses parches temporales en el archivo `recipe.yml` que involucren sintaxis de scripts multilinea si pueden romper Nushell (`eval_block_with_input`). Utiliza el archivo físico estructurado `instalar-kinetic.sh`.
 - Ten en cuenta que el usuario ya sabe clonar, editar y hacer commits en GitHub de forma fluida. Sé directo y técnico.
 
+https://github.com/rupeji/Bazzite/pkgs/container/bazzite-kineticwe
+
+https://github.com/Keyitdev/sddm-astronaut-theme
