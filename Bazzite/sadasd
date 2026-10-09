@@ -1,0 +1,1 @@
+docker run --privileged --rm -it -v ./build:/data ghcr.io/blue-build/cli:latest bluebuild generate-iso --iso-name donzzite.iso image ghcr.io/rupeji/bazzite-kineticwe:latest
