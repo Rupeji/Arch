@@ -40,8 +40,14 @@ Hacer la build en el server arch
 
 docker run --privileged --rm -it -v /home/inhumano:/build -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/blue-build/cli:latest bluebuild generate-iso --iso-name donzzite.iso image ghcr.io/rupeji/bazzite-kineticwe:latest
 
+sudo mv /bluebuild/donzzite.iso /home/inhumano/ && sudo rm -rf /bluebuild
+
 ls -lh /home/inhumano/donzzite.iso
 
 sudo chown inhumano:inhumano /home/inhumano/donzzite.iso && chmod 644 /home/inhumano/donzzite.iso
+
+inhumano
+1234
+
 
 
