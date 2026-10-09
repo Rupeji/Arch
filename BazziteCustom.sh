@@ -2,19 +2,28 @@
 name: bazzite-kineticwe
 description: Imagen personalizada de Bazzite con el entorno de mosaico KineticWE, Kitty y la shell Fish.
 
-# Descarga de la imagen base oficial de Bazzite (KDE)
+# Descarga de la imagen base oficial de Bazzite (KDE + Nvidia)
 base-image: ghcr.io/ublue-os/bazzite-nvidia
 image-version: stable
 
 modules:
-  # 1. Gestión de repositorios e instalación con el módulo DNF oficial de BlueBuild
-  - type: dnf
-    repos:
-      copr:
-        - theblackdon/kineticwe   # Repo principal de KineticWE
-        - lionheartp/Hyprland     # Provee los paquetes base de Noctalia Shell
+  # 1. Habilitar los repositorios COPR necesarios
+  - type: copr
+    enable:
+      - theblackdon/kineticwe   # Repo principal de KineticWE
+      - lionheartp/Hyprland     # Provee los paquetes base de Noctalia Shell
+
+  # 2. Reemplazo atómico e instalación
+  - type: rpm-ostree
+    # Eliminamos primero los paquetes stock conflictivos para que KineticWE los pueda sustituir
+    override-remove:
+      - kwin
+      - kwin-common
+      - kwin-libs
+      - kglobalacceld
+      - kdecoration
     install:
-      - kineticwe    # Reemplaza atómicamente a kwin, kglobalacceld, etc.
-      - noctalia-git # Shell oficial que acompaña al entorno KineticWE
-      - kitty        # Emulador de terminal por GPU seleccionado
-      - fish         # Shell interactiva por defecto
+      - kineticwe    # Ahora sí se instalará reemplazando los anteriores sin conflictos
+      - noctalia-git # Shell oficial del entorno
+      - kitty        # Emulador de terminal por GPU
+      - fish         # Shell interactiva
