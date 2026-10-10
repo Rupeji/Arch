@@ -1,0 +1,22 @@
+# Mapeo nativo automático: BlueBuild inyecta todo lo que esté en /files dentro de la ISO
+base-image: ghcr.io/ublue-os/bazzite-nvidia
+image-version: stable
+
+modules:
+  # Los archivos de auto-login y environment de /files se copian solos al inicio
+  - type: script
+    snippets:
+      - |
+        bash -c '
+        # 1. Enlazar repositorios e instalar usando el override de Don
+        curl -Lo /etc/yum.repos.d/_copr_lionheartp-Hyprland.repo https://fedorainfracloud.org
+        curl -Lo /etc/yum.repos.d/_copr_theblackdon-kineticwe.repo https://fedorainfracloud.org
+        
+        # 2. Bloquear duplicados
+        echo "excludepkgs=noctalia" >> /etc/yum.repos.d/fedora.repo
+        echo "excludepkgs=noctalia" >> /etc/yum.repos.d/fedora-updates.repo
+        
+        # 3. Transmutación
+        rpm-ostree override remove kwin kwin-common kwin-libs kglobalacceld kdecoration --install kineticwe --install noctalia-shell-v5
+        rpm-ostree install kitty fish dolphin mpvpaper
+        '
