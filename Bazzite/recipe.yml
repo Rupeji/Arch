@@ -1,13 +1,13 @@
 # yaml-language-server: $schema=https://blue-build.org
 version: 1
 name: bazzite-kineticwe
-description: Versión definitiva blindada. Entorno KineticWE nativo y aprovisionamiento seguro de usuario.
+description: Versión Frankenstein definitiva. Tu base de recámara con Auto-Login nativo por directorios.
 
 base-image: ghcr.io/ublue-os/bazzite-nvidia
 image-version: stable
 
 modules:
-   # 1. TRANSMUTACIÓN ATÓMICA DE PANTALLA (CORREGIDA SIN PARÁMETROS ROTOS)
+  # 1. TRANSMUTACIÓN ATÓMICA DE PANTALLA (TU CÓDIGO DE LA RECÁMARA IMPECABLE)
   - type: script
     snippets:
       - |
@@ -26,20 +26,24 @@ modules:
         # 1.4 Instalamos las aplicaciones estéticas complementarias en las capas
         rpm-ostree install kitty fish dolphin mpvpaper
         '
-  # 2. CONFIGURACIÓN DEL ESQUELETO PRE-INICIO Y LOGÍSTICA DE PANTALLA
+
+
+  # 2. INYECCIÓN DE USUARIO ESTÁNDAR COMPILADA POR BASH (SIN HASHES ROTOS)
   - type: script
     snippets:
       - |
         bash -c '
-        # 2.1 Usamos el /etc/skel REAL (El que Fedora clona al crear usuarios físicamente)
-        mkdir -p /etc/skel/.config/kitty
-        mkdir -p /etc/skel/.config/fish
-        echo "set -g fish_greeting" > /etc/skel/.config/fish/config.fish
+        # Creamos la casa física en la raíz temporal
+        mkdir -p /var/home/inhumano
         
-        # 2.2 Forzar a Fish como la shell predeterminada para cualquier usuario nuevo
-        sed -i "s/\/bin\/bash/\/usr\/bin\/fish/g" /etc/default/useradd
+        # Forzamos la creación del usuario con comandos puros de Linux
+        useradd -d /var/home/inhumano -M -G wheel -s /usr/bin/fish inhumano
         
-        # 2.3 Dejar el AccountsService preparado para que el usuario arranque en Noctalia directamente
-        mkdir -p /var/lib/AccountsService/users
-        echo -e "[User]\nSession=noctalia\nSystemAccount=false" > /var/lib/AccountsService/users/inhumano
+        # El secreto: Le metemos una contraseña limpia en texto plano que la nube SÍ procesa
+        echo "inhumano:1234" | chpasswd
+        
+        # Le damos los permisos obligatorios para que no rebote al entrar
+        cp -r /etc/skel/. /var/home/inhumano/
+        chown -R inhumano:inhumano /var/home/inhumano
+        chmod 700 /var/home/inhumano
         '
